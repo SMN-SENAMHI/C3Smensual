@@ -52,11 +52,28 @@
     const dz = document.getElementById('dz');
     const grafica = document.getElementById('grafica');
 
+    const dzCodeMap = {
+      "DZ-PIURA": "01",
+      "DZ-LAMBAYEQUE": "02",
+      "DZ-CAJAMARCA": "03",
+      "DZ-LIMA": "04",
+      "DZ-ICA": "05",
+      "DZ-AREQUIPA": "06",
+      "DZ-TACNA": "07",
+      "DZ-LORETO": "08",
+      "DZ-SAN MARTÍN": "09",
+      "DZ-HUÁNUCO": "10",
+      "DZ-JUNÍN": "11",
+      "DZ-CUSCO": "12",
+      "DZ-PUNO": "13"
+    };
+
     function actualizarGrafica() {
       const fecha = mes.value;
       const varName = variable.value;
       const dzName = dz.value;
-      const imgPath = `data/graphics/DZ/pre_ecmwf_${fecha}_${varName}_per_${dzName}.png`;
+      const dzCode = dzCodeMap[dzName];
+      const imgPath = `data/graphics/DZ/pre_ecmwf_${fecha}_${varName}_per_${dzCode}.png`;
       grafica.src = imgPath;
     }
 
