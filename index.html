@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard C3S mensual</title>
+</head>
+<body>
+  <h2>Visualizador de Pronósticos C3S</h2>
+
+  <label for="mes">Selecciona el mes:</label>
+  <select id="mes">
+    <option value="202506">Junio 2025</option>
+    <option value="202507">Julio 2025</option>
+    <option value="202508">Agosto 2025</option>
+    <option value="202509">Setiembre 2025</option>
+    <option value="202510">Octubre 2025</option>
+  </select>
+
+  <label for="variable">Selecciona la variable:</label>
+  <select id="variable">
+    <option value="anomPrec">Anomalía de Precipitación</option>
+    <option value="anomTempMin">Anomalía de Temp. Mínima</option>
+    <option value="anomTempMax">Anomalía de Temp. Máxima</option>
+  </select>
+
+  <label for="dz">Selecciona la Dirección Zonal:</label>
+  <select id="dz">
+    <option value="DZ-PIURA">DZ-PIURA</option>
+    <option value="DZ-LAMBAYEQUE">DZ-LAMBAYEQUE</option>
+    <option value="DZ-CAJAMARCA">DZ-CAJAMARCA</option>
+    <option value="DZ-LIMA">DZ-LIMA</option>
+    <option value="DZ-ICA">DZ-ICA</option>
+    <option value="DZ-AREQUIPA">DZ-AREQUIPA</option>
+    <option value="DZ-TACNA">DZ-TACNA</option>
+    <option value="DZ-LORETO">DZ-LORETO</option>
+    <option value="DZ-SAN MARTÍN">DZ-SAN MARTÍN</option>
+    <option value="DZ-HUÁNUCO">DZ-HUÁNUCO</option>
+    <option value="DZ-JUNÍN">DZ-JUNÍN</option>
+    <option value="DZ-CUSCO">DZ-CUSCO</option>
+    <option value="DZ-PUNO">DZ-PUNO</option>
+  </select>
+
+  <div style="margin-top:20px;">
+    <img id="grafica" src="" alt="Selecciona una combinación" width="800"/>
+  </div>
+
+  <script>
+    const mes = document.getElementById('mes');
+    const variable = document.getElementById('variable');
+    const dz = document.getElementById('dz');
+    const grafica = document.getElementById('grafica');
+
+    function actualizarGrafica() {
+      const fecha = mes.value;
+      const varName = variable.value;
+      const dzName = dz.value;
+      const imgPath = `data/graphics/DZ/pre_ecmwf_${fecha}_${varName}_per_${dzName}.png`;
+      grafica.src = imgPath;
+    }
+
+    mes.addEventListener('change', actualizarGrafica);
+    variable.addEventListener('change', actualizarGrafica);
+    dz.addEventListener('change', actualizarGrafica);
+  </script>
+</body>
+</html>
