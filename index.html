@@ -14,10 +14,28 @@
 </head>
 <body>
     <h2>Pronóstico Mensual C3S por Dirección Zonal - 2025</h2>
-    <p>Selecciona un mes para visualizar las anomalías de precipitación, temperatura mínima y máxima por DZ:</p>
+    <p>Selecciona una Dirección Zonal y luego un mes para visualizar las anomalías:</p>
+
+    <label for="dzSelect">Dirección Zonal:</label>
+    <select id="dzSelect">
+        <option value="">-- Elegir DZ --</option>
+        <option value="01">DZ PIURA</option>
+        <option value="02">DZ LAMBAYEQUE</option>
+        <option value="03">DZ CAJAMARCA</option>
+        <option value="04">DZ LIMA</option>
+        <option value="05">DZ ICA</option>
+        <option value="06">DZ AREQUIPA</option>
+        <option value="07">DZ TACNA</option>
+        <option value="08">DZ LORETO</option>
+        <option value="09">DZ SAN MARTÍN</option>
+        <option value="10">DZ HUÁNUCO</option>
+        <option value="11">DZ JUNÍN</option>
+        <option value="12">DZ CUSCO</option>
+        <option value="13">DZ PUNO</option>
+    </select>
 
     <label for="monthSelect">Mes:</label>
-    <select id="monthSelect">
+    <select id="monthSelect" disabled>
         <option value="">-- Elegir mes --</option>
         <option value="202506">Junio 2025</option>
         <option value="202507">Julio 2025</option>
@@ -30,45 +48,54 @@
 
     <script>
         const imageContainer = document.getElementById("imageContainer");
+        const dzSelect = document.getElementById("dzSelect");
+        const monthSelect = document.getElementById("monthSelect");
         const baseUrl = "https://smn-senamhi.github.io/C3Smensual/data/graphics/DZ/";
+
         const dzList = {
             "01": "PIURA", "02": "LAMBAYEQUE", "03": "CAJAMARCA", "04": "LIMA",
             "05": "ICA", "06": "AREQUIPA", "07": "TACNA", "08": "LORETO",
             "09": "SAN MARTÍN", "10": "HUÁNUCO", "11": "JUNÍN", "12": "CUSCO", "13": "PUNO"
         };
+
         const variables = [
             { code: "anomPrec", label: "Precipitación" },
             { code: "anomTempMin", label: "Temp. Mínima" },
             { code: "anomTempMax", label: "Temp. Máxima" }
         ];
 
-        document.getElementById("monthSelect").addEventListener("change", function () {
+        dzSelect.addEventListener("change", function () {
+            imageContainer.innerHTML = "";
+            monthSelect.value = "";
+            monthSelect.disabled = !this.value;
+        });
+
+        monthSelect.addEventListener("change", function () {
+            const dzCode = dzSelect.value;
+            const dzName = dzList[dzCode];
             const month = this.value;
             imageContainer.innerHTML = "";
 
-            if (!month) return;
+            if (!dzCode || !month) return;
 
-            for (const dzCode in dzList) {
-                const dzName = dzList[dzCode];
-                variables.forEach(v => {
-                    const filename = `pre_ecmwf_${month}_${v.code}_per_${dzCode}.png`;
-                    const fullPath = baseUrl + filename;
+            variables.forEach(v => {
+                const filename = `pre_ecmwf_${month}_${v.code}_per_${dzCode}.png`;
+                const fullPath = baseUrl + filename;
 
-                    const div = document.createElement("div");
-                    div.className = "img-container";
+                const div = document.createElement("div");
+                div.className = "img-container";
 
-                    const img = document.createElement("img");
-                    img.src = fullPath;
-                    img.alt = `${v.label} - ${dzName}`;
+                const img = document.createElement("img");
+                img.src = fullPath;
+                img.alt = `${v.label} - ${dzName}`;
 
-                    const caption = document.createElement("p");
-                    caption.textContent = `${v.label} - DZ ${dzName}`;
+                const caption = document.createElement("p");
+                caption.textContent = `${v.label} - DZ ${dzName}`;
 
-                    div.appendChild(img);
-                    div.appendChild(caption);
-                    imageContainer.appendChild(div);
-                });
-            }
+                div.appendChild(img);
+                div.appendChild(caption);
+                imageContainer.appendChild(div);
+            });
         });
     </script>
 </body>
