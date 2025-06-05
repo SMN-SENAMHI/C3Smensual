@@ -1,85 +1,75 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard C3S mensual</title>
+    <meta charset="UTF-8">
+    <title>Pronósticos Mensuales C3S - SMN-SENAMHI</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
+        select { font-size: 16px; padding: 6px; margin: 10px; }
+        .images { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px; }
+        .img-container { text-align: center; width: 30%; }
+        .img-container img { width: 100%; border: 1px solid #ccc; box-shadow: 2px 2px 6px rgba(0,0,0,0.1); }
+        .img-container p { font-size: 14px; margin: 5px 0; }
+    </style>
 </head>
 <body>
-  <h2>Visualizador de Pronósticos C3S</h2>
+    <h2>Pronóstico Mensual C3S por Dirección Zonal - 2025</h2>
+    <p>Selecciona un mes para visualizar las anomalías de precipitación, temperatura mínima y máxima por DZ:</p>
 
-  <label for="mes">Selecciona el mes:</label>
-  <select id="mes">
-    <option value="202506">Junio 2025</option>
-    <option value="202507">Julio 2025</option>
-    <option value="202508">Agosto 2025</option>
-    <option value="202509">Setiembre 2025</option>
-    <option value="202510">Octubre 2025</option>
-  </select>
+    <label for="monthSelect">Mes:</label>
+    <select id="monthSelect">
+        <option value="">-- Elegir mes --</option>
+        <option value="202506">Junio 2025</option>
+        <option value="202507">Julio 2025</option>
+        <option value="202508">Agosto 2025</option>
+        <option value="202509">Setiembre 2025</option>
+        <option value="202510">Octubre 2025</option>
+    </select>
 
-  <label for="variable">Selecciona la variable:</label>
-  <select id="variable">
-    <option value="anomPrec">Anomalía de Precipitación</option>
-    <option value="anomTempMin">Anomalía de Temp. Mínima</option>
-    <option value="anomTempMax">Anomalía de Temp. Máxima</option>
-  </select>
+    <div class="images" id="imageContainer"></div>
 
-  <label for="dz">Selecciona la Dirección Zonal:</label>
-  <select id="dz">
-    <option value="DZ-PIURA">DZ-PIURA</option>
-    <option value="DZ-LAMBAYEQUE">DZ-LAMBAYEQUE</option>
-    <option value="DZ-CAJAMARCA">DZ-CAJAMARCA</option>
-    <option value="DZ-LIMA">DZ-LIMA</option>
-    <option value="DZ-ICA">DZ-ICA</option>
-    <option value="DZ-AREQUIPA">DZ-AREQUIPA</option>
-    <option value="DZ-TACNA">DZ-TACNA</option>
-    <option value="DZ-LORETO">DZ-LORETO</option>
-    <option value="DZ-SAN MARTÍN">DZ-SAN MARTÍN</option>
-    <option value="DZ-HUÁNUCO">DZ-HUÁNUCO</option>
-    <option value="DZ-JUNÍN">DZ-JUNÍN</option>
-    <option value="DZ-CUSCO">DZ-CUSCO</option>
-    <option value="DZ-PUNO">DZ-PUNO</option>
-  </select>
+    <script>
+        const imageContainer = document.getElementById("imageContainer");
+        const baseUrl = "https://smn-senamhi.github.io/C3Smensual/data/graphics/DZ/";
+        const dzList = {
+            "01": "PIURA", "02": "LAMBAYEQUE", "03": "CAJAMARCA", "04": "LIMA",
+            "05": "ICA", "06": "AREQUIPA", "07": "TACNA", "08": "LORETO",
+            "09": "SAN MARTÍN", "10": "HUÁNUCO", "11": "JUNÍN", "12": "CUSCO", "13": "PUNO"
+        };
+        const variables = [
+            { code: "anomPrec", label: "Precipitación" },
+            { code: "anomTempMin", label: "Temp. Mínima" },
+            { code: "anomTempMax", label: "Temp. Máxima" }
+        ];
 
-  <div style="margin-top:20px;">
-    <img id="grafica" src="" alt="Selecciona una combinación" width="800"/>
-  </div>
+        document.getElementById("monthSelect").addEventListener("change", function () {
+            const month = this.value;
+            imageContainer.innerHTML = "";
 
-  <script>
-    const mes = document.getElementById('mes');
-    const variable = document.getElementById('variable');
-    const dz = document.getElementById('dz');
-    const grafica = document.getElementById('grafica');
+            if (!month) return;
 
-    const dzCodeMap = {
-      "DZ-PIURA": "01",
-      "DZ-LAMBAYEQUE": "02",
-      "DZ-CAJAMARCA": "03",
-      "DZ-LIMA": "04",
-      "DZ-ICA": "05",
-      "DZ-AREQUIPA": "06",
-      "DZ-TACNA": "07",
-      "DZ-LORETO": "08",
-      "DZ-SAN MARTÍN": "09",
-      "DZ-HUÁNUCO": "10",
-      "DZ-JUNÍN": "11",
-      "DZ-CUSCO": "12",
-      "DZ-PUNO": "13"
-    };
+            for (const dzCode in dzList) {
+                const dzName = dzList[dzCode];
+                variables.forEach(v => {
+                    const filename = `pre_ecmwf_${month}_${v.code}_per_${dzCode}.png`;
+                    const fullPath = baseUrl + filename;
 
-    function actualizarGrafica() {
-      const fecha = mes.value;
-      const varName = variable.value;
-      const dzName = dz.value;
-      const dzCode = dzCodeMap[dzName];
-      const imgPath = `data/graphics/DZ/pre_ecmwf_${fecha}_${varName}_per_${dzCode}.png`;
-      grafica.src = imgPath;
-    }
+                    const div = document.createElement("div");
+                    div.className = "img-container";
 
-    mes.addEventListener('change', actualizarGrafica);
-    variable.addEventListener('change', actualizarGrafica);
-    dz.addEventListener('change', actualizarGrafica);
-  </script>
+                    const img = document.createElement("img");
+                    img.src = fullPath;
+                    img.alt = `${v.label} - ${dzName}`;
+
+                    const caption = document.createElement("p");
+                    caption.textContent = `${v.label} - DZ ${dzName}`;
+
+                    div.appendChild(img);
+                    div.appendChild(caption);
+                    imageContainer.appendChild(div);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
