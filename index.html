@@ -13,89 +13,136 @@
     </style>
 </head>
 <body>
-    <h2>Pronóstico Mensual C3S por Dirección Zonal - 2025</h2>
-    <p>Selecciona una Dirección Zonal y luego un mes para visualizar las anomalías:</p>
+    <h2>Pronóstico Mensual C3S - SMN-SENAMHI (2025)</h2>
 
-    <label for="dzSelect">Dirección Zonal:</label>
-    <select id="dzSelect">
-        <option value="">-- Elegir DZ --</option>
-        <option value="01">DZ PIURA</option>
-        <option value="02">DZ LAMBAYEQUE</option>
-        <option value="03">DZ CAJAMARCA</option>
-        <option value="04">DZ LIMA</option>
-        <option value="05">DZ ICA</option>
-        <option value="06">DZ AREQUIPA</option>
-        <option value="07">DZ TACNA</option>
-        <option value="08">DZ LORETO</option>
-        <option value="09">DZ SAN MARTÍN</option>
-        <option value="10">DZ HUÁNUCO</option>
-        <option value="11">DZ JUNÍN</option>
-        <option value="12">DZ CUSCO</option>
-        <option value="13">DZ PUNO</option>
+    <label for="scopeSelect">Área:</label>
+    <select id="scopeSelect">
+        <option value="">-- Elegir área --</option>
+        <option value="DZ">Dirección Zonal (DZ)</option>
+        <option value="DPTO">Departamento (DPTO)</option>
+        <option value="PERU">Perú</option>
+        <option value="SUD">Sudamérica</option>
     </select>
 
-    <label for="monthSelect">Mes:</label>
-    <select id="monthSelect" disabled>
-        <option value="">-- Elegir mes --</option>
-        <option value="202507">Julio 2025</option>
-        <option value="202508">Agosto 2025</option>
-        <option value="202509">Setiembre 2025</option>
-        <option value="202510">Octubre 2025</option>
-        <option value="202511">Noviembre 2025</option>
-    </select>
+    <div id="areaSelectors"></div>
 
     <div class="images" id="imageContainer"></div>
 
     <script>
+        const scopeSelect = document.getElementById("scopeSelect");
+        const areaSelectors = document.getElementById("areaSelectors");
         const imageContainer = document.getElementById("imageContainer");
-        const dzSelect = document.getElementById("dzSelect");
-        const monthSelect = document.getElementById("monthSelect");
-        const baseUrl = "https://smn-senamhi.github.io/C3Smensual/data/graphics/DZ/";
 
         const dzList = {
             "01": "PIURA", "02": "LAMBAYEQUE", "03": "CAJAMARCA", "04": "LIMA",
             "05": "ICA", "06": "AREQUIPA", "07": "TACNA", "08": "LORETO",
-            "09": "SAN MARTÍN", "10": "HUÁNUCO", "11": "JUNÍN", "12": "CUSCO", "13": "PUNO"
+            "09": "SAN_MARTÍN", "10": "HUÁNUCO", "11": "JUNÍN", "12": "CUSCO", "13": "PUNO"
         };
 
+        const dptoList = {
+            "AMAZONAS": "AMAZONAS", "ANCASH": "ANCASH", "APURIMAC": "APURIMAC", "AREQUIPA": "AREQUIPA",
+            "AYACUCHO": "AYACUCHO", "CAJAMARCA": "CAJAMARCA", "CUSCO": "CUSCO", "HUANCAVELICA": "HUANCAVELICA",
+            "HUÁNUCO": "HUÁNUCO", "ICA": "ICA", "JUNÍN": "JUNÍN", "LA_LIBERTAD": "LA_LIBERTAD",
+            "LAMBAYEQUE": "LAMBAYEQUE", "LIMA": "LIMA", "LORETO": "LORETO", "MADRE_DE_DIOS": "MADRE_DE_DIOS",
+            "MOQUEGUA": "MOQUEGUA", "PASCO": "PASCO", "PIURA": "PIURA", "PUNO": "PUNO",
+            "SAN_MARTÍN": "SAN_MARTÍN", "TACNA": "TACNA", "TUMBES": "TUMBES", "UCAYALI": "UCAYALI"
+        };
+
+        const months = ["202506", "202507", "202508", "202509", "202510", "202511"];
         const variables = [
             { code: "anomPrec", label: "Precipitación" },
             { code: "anomTempMin", label: "Temp. Mínima" },
             { code: "anomTempMax", label: "Temp. Máxima" }
         ];
 
-        dzSelect.addEventListener("change", function () {
-            imageContainer.innerHTML = "";
-            monthSelect.value = "";
-            monthSelect.disabled = !this.value;
-        });
-
-        monthSelect.addEventListener("change", function () {
-            const dzCode = dzSelect.value;
-            const dzName = dzList[dzCode];
-            const month = this.value;
+        function buildSelectors(areaType) {
+            areaSelectors.innerHTML = "";
             imageContainer.innerHTML = "";
 
-            if (!dzCode || !month) return;
+            let areaHTML = '', monthHTML = '';
+
+            if (areaType === "DZ") {
+                areaHTML += `<label for="dzSelect">Dirección Zonal:</label>
+                    <select id="dzSelect">
+                        <option value="">-- Elegir DZ --</option>
+                        ${Object.entries(dzList).map(([key, val]) => `<option value="${key}">${val}</option>`).join('')}
+                    </select>`;
+            } else if (areaType === "DPTO") {
+                areaHTML += `<label for="dptoSelect">Departamento:</label>
+                    <select id="dptoSelect">
+                        <option value="">-- Elegir Departamento --</option>
+                        ${Object.entries(dptoList).map(([key, val]) => `<option value="${key}">${val.replace(/_/g, ' ')}</option>`).join('')}
+                    </select>`;
+            }
+
+            monthHTML += `<label for="monthSelect">Mes:</label>
+                <select id="monthSelect">
+                    <option value="">-- Elegir mes --</option>
+                    <option value="202506">Junio 2025</option>
+<option value="202507">Julio 2025</option>
+<option value="202508">Agosto 2025</option>
+<option value="202509">Setiembre 2025</option>
+<option value="202510">Octubre 2025</option>
+<option value="202511">Noviembre 2025</option>
+                </select>`;
+
+            areaSelectors.innerHTML = areaHTML + monthHTML;
+
+            document.getElementById("monthSelect").addEventListener("change", updateImages);
+            if (areaType !== "PERU" && areaType !== "SUD") {
+                document.querySelector(`#${areaType.toLowerCase()}Select`).addEventListener("change", updateImages);
+            } else {
+                updateImages();
+            }
+        }
+
+        function updateImages() {
+            imageContainer.innerHTML = "";
+
+            const area = scopeSelect.value;
+            const month = document.getElementById("monthSelect").value;
+            if (!month) return;
+
+            let basePath = `https://smn-senamhi.github.io/C3Smensual/data/graphics/${area}/`;
+            let name = "";
+
+            if (area === "DZ") {
+                const dz = document.getElementById("dzSelect").value;
+                if (!dz) return;
+                name = dz;
+            } else if (area === "DPTO") {
+                const dpto = document.getElementById("dptoSelect").value;
+                if (!dpto) return;
+                name = dpto;
+            } else if (area === "PERU") {
+                name = "PERU";
+            } else if (area === "SUD") {
+                name = "sudamerica";
+            }
 
             variables.forEach(v => {
-                const filename = `pre_ecmwf_${month}_${v.code}_per_${dzCode}.png`;
-                const fullPath = baseUrl + filename;
+                let file = area === "SUD" ? 
+                    `pre_ecmwf_${month}_${v.code}_sudamerica.png` : 
+                    `pre_ecmwf_${month}_${v.code}_per_${name}.png`;
 
                 const div = document.createElement("div");
                 div.className = "img-container";
 
                 const img = document.createElement("img");
-                img.src = fullPath;
-                img.alt = `${v.label} - ${dzName}`;
+                img.src = basePath + file;
+                img.alt = v.label;
 
                 const caption = document.createElement("p");
-                caption.textContent = `${v.label} - DZ ${dzName}`;
+                caption.textContent = `${v.label} - ${area} ${name.replace(/_/g, ' ')}`;
 
                 div.appendChild(img);
                 div.appendChild(caption);
                 imageContainer.appendChild(div);
             });
+        }
+
+        scopeSelect.addEventListener("change", function () {
+            buildSelectors(this.value);
         });
     </script>
 </body>
