@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,7 +9,8 @@
         .images { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px; }
         .img-container { text-align: center; width: 30%; }
         .img-container img { width: 100%; border: 1px solid #ccc; box-shadow: 2px 2px 6px rgba(0,0,0,0.1); }
-        .img-container p { font-size: 14px; margin: 5px 0; }
+        .img-container p, .img-container a { font-size: 14px; margin: 5px 0; display: block; }
+        .img-container a { color: blue; word-break: break-all; }
     </style>
 </head>
 <body>
@@ -37,13 +37,13 @@
         const dzList = {
             "01": "PIURA", "02": "LAMBAYEQUE", "03": "CAJAMARCA", "04": "LIMA",
             "05": "ICA", "06": "AREQUIPA", "07": "TACNA", "08": "LORETO",
-            "09": "SAN_MARTÍN", "10": "HUÁNUCO", "11": "JUNÍN", "12": "CUSCO", "13": "PUNO"
+            "09": "SAN_MARTIN", "10": "HUANUCO", "11": "JUNIN", "12": "CUSCO", "13": "PUNO"
         };
 
         const dptoList = {
             "AMAZONAS": "AMAZONAS", "ANCASH": "ANCASH", "APURIMAC": "APURIMAC", "AREQUIPA": "AREQUIPA",
             "AYACUCHO": "AYACUCHO", "CAJAMARCA": "CAJAMARCA", "CUSCO": "CUSCO", "HUANCAVELICA": "HUANCAVELICA",
-            "HUÁNUCO": "HUÁNUCO", "ICA": "ICA", "JUNÍN": "JUNÍN", "LA_LIBERTAD": "LA_LIBERTAD",
+            "HUANUCO": "HUANUCO", "ICA": "ICA", "JUNIN": "JUNIN", "LA_LIBERTAD": "LA_LIBERTAD",
             "LAMBAYEQUE": "LAMBAYEQUE", "LIMA": "LIMA", "LORETO": "LORETO", "MADRE_DE_DIOS": "MADRE_DE_DIOS",
             "MOQUEGUA": "MOQUEGUA", "PASCO": "PASCO", "PIURA": "PIURA", "PUNO": "PUNO",
             "SAN_MARTIN": "SAN_MARTIN", "TACNA": "TACNA", "TUMBES": "TUMBES", "UCAYALI": "UCAYALI"
@@ -72,7 +72,7 @@
                 areaHTML += `<label for="dptoSelect">Departamento:</label>
                     <select id="dptoSelect">
                         <option value="">-- Elegir Departamento --</option>
-                        ${Object.entries(dptoList).map(([key, val]) => `<option value="${key}">${val.replace(/_/g, ' ')}</option>`).join('')}                        
+                        ${Object.entries(dptoList).map(([key, val]) => `<option value="${key}">${val.replace(/_/g, ' ')}</option>`).join('')}
                     </select>`;
             }
 
@@ -126,18 +126,27 @@
                     `pre_ecmwf_${month}_${v.code}_sudamerica.png` : 
                     `pre_ecmwf_${month}_${v.code}_per_${name}.png`;
 
+                let fullPath = basePath + file;
+                console.log("Ruta final: ", fullPath);
+
                 const div = document.createElement("div");
                 div.className = "img-container";
 
                 const img = document.createElement("img");
-                img.src = basePath + file;
+                img.src = fullPath;
                 img.alt = v.label;
 
                 const caption = document.createElement("p");
                 caption.textContent = `${v.label} - ${area} ${name.replace(/_/g, ' ')}`;
 
+                const link = document.createElement("a");
+                link.href = fullPath;
+                link.target = "_blank";
+                link.textContent = file;
+
                 div.appendChild(img);
                 div.appendChild(caption);
+                div.appendChild(link);
                 imageContainer.appendChild(div);
             });
         }
@@ -148,3 +157,4 @@
     </script>
 </body>
 </html>
+
