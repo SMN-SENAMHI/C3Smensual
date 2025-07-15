@@ -46,7 +46,7 @@
             "HUÁNUCO": "HUÁNUCO", "ICA": "ICA", "JUNÍN": "JUNÍN", "LA_LIBERTAD": "LA_LIBERTAD",
             "LAMBAYEQUE": "LAMBAYEQUE", "LIMA": "LIMA", "LORETO": "LORETO", "MADRE_DE_DIOS": "MADRE_DE_DIOS",
             "MOQUEGUA": "MOQUEGUA", "PASCO": "PASCO", "PIURA": "PIURA", "PUNO": "PUNO",
-            "SAN_MARTÍN": "SAN_MARTIN", "TACNA": "TACNA", "TUMBES": "TUMBES", "UCAYALI": "UCAYALI"
+            "SAN_MARTIN": "SAN_MARTIN", "TACNA": "TACNA", "TUMBES": "TUMBES", "UCAYALI": "UCAYALI"
         };
 
         const months = ["202507", "202508", "202509", "202510", "202511", "202512"];
@@ -72,7 +72,7 @@
                 areaHTML += `<label for="dptoSelect">Departamento:</label>
                     <select id="dptoSelect">
                         <option value="">-- Elegir Departamento --</option>
-                        ${Object.entries(dptoList).map(([key, val]) => `<option value="${key}">${val.replace(/_/g, ' ')}</option>`).join('')}
+                        ${Object.entries(dptoList).map(([key, val]) => `<option value="${key}">${val.replace(/_/g, ' ')}</option>`).join('')}                        
                     </select>`;
             }
 
