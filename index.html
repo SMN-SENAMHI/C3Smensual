@@ -49,7 +49,7 @@
             "SAN_MARTIN": "SAN_MARTIN", "TACNA": "TACNA", "TUMBES": "TUMBES", "UCAYALI": "UCAYALI"
         };
 
-        const months = ["202607", "202608", "202609", "202610", "202611", "202612"];
+        const months = ["202608", "202609", "202610", "202611", "202612","202701"];
         const variables = [
             { code: "anomPrec", label: "Precipitación" },
             { code: "anomTempMin", label: "Temp. Mínima" },
@@ -79,12 +79,12 @@
             monthHTML += `<label for="monthSelect">Mes:</label>
                 <select id="monthSelect">
                     <option value="">-- Elegir mes --</option>
-                    <option value="202607">Julio 2026</option>
                     <option value="202608">Agosto 2026</option>
                     <option value="202609">Septiembre 2026</option>
                     <option value="202610">Octubre 2026</option>
                     <option value="202611">Noviembre 2026</option>
                     <option value="202612">Diciembre 2026</option>
+                    <option value="202701">Enero 2027</option>
                 </select>`;
 
             areaSelectors.innerHTML = areaHTML + monthHTML;
